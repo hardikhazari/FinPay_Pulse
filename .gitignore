@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+webapp/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints
+
+# Data (Ignore raw data to save space, but keep the plots)
+data/*.csv
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Keep SQL runner local
+sql/run_all_sql.py

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - FinPay Pulse</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar glass">
+            <div class="sidebar-brand">FinPay Pulse</div>
+            
+            <a href="dashboard.html" class="nav-link">Customer Data</a>
+            <a href="analytics.html" class="nav-link active">Analytics Overview</a>
+            <a href="more_analytics.html" class="nav-link">More Analytics</a>
+            <a href="info.html" class="nav-link">RFM Guide</a>
+            
+            <div class="sidebar-spacer"></div>
+            
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header animate-fade">
+                <div class="user-profile">
+                    <div class="user-email" id="userEmailDisplay"></div>
+                    <button id="logoutBtn" class="btn btn-sm">Sign Out</button>
+                </div>
+            </header>
+
+            <div class="page-header animate-fade">
+                <h1>Analytics Overview</h1>
+            </div>
+            
+            <div class="charts-grid animate-fade" style="animation-delay: 0.1s;">
+                <!-- Chart 1 -->
+                <div class="chart-card glass">
+                    <h3>Customer Segment Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2 -->
+                <div class="chart-card glass">
+                    <h3>Average Revenue by Segment</h3>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

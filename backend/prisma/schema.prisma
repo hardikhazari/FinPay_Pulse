@@ -1,0 +1,93 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  role      String   @default("viewer") // admin | viewer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id           String        @id
+  name         String?
+  email        String?       @unique
+  signupDate   DateTime?
+  region       String?
+  transactions Transaction[]
+  rfmScore     RfmScore?
+  clv          Clv?
+  churnScore   ChurnScore?
+}
+
+model Transaction {
+  id              String   @id
+  customerId      String
+  amount          Decimal  @db.Decimal(10,2)
+  transactionDate DateTime
+  productCategory String?
+  status          String
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, status])
+  @@index([transactionDate])
+}
+
+model RfmScore {
+  customerId     String   @id
+  recencyScore   Int
+  frequencyScore Int
+  monetaryScore  Int
+  segment        String
+  computedAt     DateTime @default(now())
+  customer       Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([computedAt])
+}
+
+model Cohort {
+  id           String   @id @default(uuid())
+  customerId   String
+  cohortMonth  String
+  activeMonth  String
+  retained     Boolean
+  computedAt   DateTime @default(now())
+
+  @@index([cohortMonth])
+  @@index([customerId])
+}
+
+model Clv {
+  customerId   String   @id
+  predictedClv Decimal  @db.Decimal(10,2) // Changed to Decimal for strict financial precision
+  computedAt   DateTime @default(now())
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([computedAt])
+}
+
+model ChurnScore {
+  customerId       String   @id
+  churnProbability Float
+  riskTier         String
+  computedAt       DateTime @default(now())
+  customer         Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([computedAt])
+  @@index([riskTier])
+}
+
+model Forecast {
+  month            String   @id // e.g., '2025-06'
+  predictedRevenue Decimal  @db.Decimal(10,2)
+  modelUsed        String
+  computedAt       DateTime @default(now())
+}

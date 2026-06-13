@@ -9,7 +9,7 @@
 
 SELECT 
     t.customer_id,
-    DATEDIFF(CURDATE(), MAX(t.transaction_date)) AS recency,
+    DATEDIFF((SELECT MAX(transaction_date) FROM transactions), MAX(t.transaction_date)) AS recency,
     COUNT(*) AS frequency,
     ROUND(SUM(t.amount), 2) AS monetary
 FROM transactions t
@@ -24,7 +24,7 @@ ORDER BY monetary DESC;
 WITH rfm_raw AS (
     SELECT 
         customer_id,
-        DATEDIFF(CURDATE(), MAX(transaction_date)) AS recency,
+        DATEDIFF((SELECT MAX(transaction_date) FROM transactions), MAX(transaction_date)) AS recency,
         COUNT(*) AS frequency,
         ROUND(SUM(amount), 2) AS monetary
     FROM transactions
@@ -39,8 +39,14 @@ rfm_scored AS (
         monetary,
         -- Recency: lower days = better = higher score (reverse NTILE)
         NTILE(5) OVER (ORDER BY recency DESC) AS r_score,
-        -- Frequency: more transactions = higher score
-        NTILE(5) OVER (ORDER BY frequency ASC) AS f_score,
+        -- Frequency: Static thresholds for ~20% quintiles
+        CASE 
+            WHEN frequency <= 8 THEN 1
+            WHEN frequency BETWEEN 9 AND 10 THEN 2
+            WHEN frequency BETWEEN 11 AND 12 THEN 3
+            WHEN frequency BETWEEN 13 AND 14 THEN 4
+            ELSE 5 
+        END AS f_score,
         -- Monetary: more spend = higher score
         NTILE(5) OVER (ORDER BY monetary ASC) AS m_score
     FROM rfm_raw

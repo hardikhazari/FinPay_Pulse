@@ -25,18 +25,10 @@ SELECT
     total_spent,
     avg_transaction,
     customer_lifespan_days,
-    -- Estimated monthly revenue
-    CASE 
-        WHEN customer_lifespan_days > 0 
-        THEN ROUND(total_spent / (customer_lifespan_days / 30.0), 2)
-        ELSE total_spent
-    END AS estimated_monthly_revenue,
+    -- Estimated monthly revenue (uses 30 days as a floor)
+    ROUND(total_spent / (GREATEST(customer_lifespan_days, 30) / 30.0), 2) AS estimated_monthly_revenue,
     -- Simple CLV projection (12-month forward)
-    CASE 
-        WHEN customer_lifespan_days > 0 
-        THEN ROUND((total_spent / (customer_lifespan_days / 30.0)) * 12, 2)
-        ELSE total_spent
-    END AS projected_annual_clv
+    ROUND((total_spent / (GREATEST(customer_lifespan_days, 30) / 30.0)) * 12, 2) AS projected_annual_clv
 FROM customer_metrics
 ORDER BY projected_annual_clv DESC
 LIMIT 50;
@@ -59,10 +51,10 @@ SELECT
     ROUND(AVG(total_spent), 2) AS avg_total_spent,
     ROUND(AVG(lifespan_days), 0) AS avg_lifespan_days,
     ROUND(AVG(
-        CASE WHEN lifespan_days > 0 THEN (total_spent / (lifespan_days / 30.0)) * 12 ELSE total_spent END
+        (total_spent / (GREATEST(lifespan_days, 30) / 30.0)) * 12
     ), 2) AS avg_projected_annual_clv,
     ROUND(SUM(
-        CASE WHEN lifespan_days > 0 THEN (total_spent / (lifespan_days / 30.0)) * 12 ELSE total_spent END
+        (total_spent / (GREATEST(lifespan_days, 30) / 30.0)) * 12
     ), 2) AS total_projected_annual_clv
 FROM customer_clv
 GROUP BY segment

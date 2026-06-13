@@ -17,3 +17,13 @@ Thumbs.db
 
 # Keep SQL runner local
 sql/run_all_sql.py
+
+# Global Ignore Secrets and Builds
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.next/
+*.db
+*.sqlite3

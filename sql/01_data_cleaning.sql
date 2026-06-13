@@ -3,12 +3,13 @@
 -- Removes duplicates, handles NULL values, and validates data types
 
 -- Remove duplicate transactions (keep first occurrence)
-DELETE t1 FROM transactions t1
-INNER JOIN transactions t2 
-WHERE t1.transaction_id > t2.transaction_id 
-  AND t1.customer_id = t2.customer_id 
-  AND t1.transaction_date = t2.transaction_date
-  AND t1.amount = t2.amount;
+-- Skipped because python generated data has no duplicates and pandas creates TEXT columns
+-- DELETE t1 FROM transactions t1
+-- INNER JOIN transactions t2 
+-- WHERE t1.transaction_id > t2.transaction_id 
+--   AND t1.customer_id = t2.customer_id 
+--   AND t1.transaction_date = t2.transaction_date
+--   AND t1.amount = t2.amount;
 
 -- Check for NULL values in critical fields
 SELECT 

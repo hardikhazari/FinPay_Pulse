@@ -21,7 +21,7 @@ An end-to-end analytics platform that solves the **silent churn problem** in dig
 ## 📊 Key Features & Findings
 
 - **Machine Learning**: 
-  - **Random Forest Classifier**: Predicts transaction failure based on payment method and device.
+  - **Transaction Failure Model**: *(Disabled in production)* Originally a Random Forest predicting failure based on device. Intentionally disabled as the Prisma schema does not track device hardware.
   - **Logistic Regression**: Identifies the exact mathematical drivers of Customer Churn.
   - **Exponential Smoothing**: Holt-Winters time-series forecasting to predict the next 30 days of revenue.
 - **Statistical Testing**: Two-Proportion Z-Test simulating an A/B test for a new checkout flow (proving statistical significance).
@@ -70,8 +70,10 @@ Ensure you have Node.js and MySQL installed.
 Navigate to `http://localhost:3050` in your browser.
 
 ### 2. Run the Machine Learning Pipeline
+*(Note: The ML scoring pipeline is intentionally configured to run manually, rather than as a background cron job. See `ml/README.md` for full architecture decisions).*
 ```bash
-jupyter notebook notebooks/machine_learning_models.ipynb
+cd ml
+python run_scoring.py --retrain
 ```
 
 ---
@@ -103,3 +105,23 @@ Node.js Express Backend API
     ↓
 Interactive Chart.js Web Dashboard
 ```
+
+## 📸 Application Screenshots
+
+<div align="center">
+  <img src="Photos/Screenshot 2026-06-03 140925.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140917.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140717.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140756.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140746.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140727.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140822.png" width="800" />
+  <br><br>
+  <img src="Photos/Screenshot 2026-06-03 140833.png" width="800" />
+</div>

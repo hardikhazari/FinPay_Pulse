@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject } from 'zod';
+
 
 /**
  * Validates request payload against a Zod schema.
  * Throws a ZodError which is caught by the errorMiddleware.
  */
-export const validate = (schema: AnyZodObject) => {
+export const validate = (schema: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await schema.parseAsync({

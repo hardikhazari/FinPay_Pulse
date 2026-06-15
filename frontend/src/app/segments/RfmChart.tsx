@@ -1,10 +1,10 @@
 "use client";
 
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card } from "@/components/ui/card";
 
 interface RfmChartProps {
-  data: any[];
+  data: { name: string; value: number; fill: string }[];
 }
 
 export function RfmChart({ data }: RfmChartProps) {

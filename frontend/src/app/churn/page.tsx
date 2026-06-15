@@ -2,12 +2,13 @@ import { fetchApi } from "@/lib/api";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ChurnCharts } from "./ChurnCharts";
+import { ChurnScore } from "@/types/api";
 
 export default async function ChurnPage() {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
 
-  let churnData = [];
+  let churnData: ChurnScore[] = [];
   let distribution = { Low: 0, Medium: 0, High: 0 };
   let errorMsg = null;
 
@@ -18,8 +19,8 @@ export default async function ChurnPage() {
     if (res.distribution) {
       distribution = res.distribution;
     }
-  } catch (err: any) {
-    errorMsg = err.message || "Failed to load Churn data.";
+  } catch (err: unknown) {
+    errorMsg = (err as Error).message || "Failed to load Churn data.";
   }
 
   const chartData = [
@@ -64,7 +65,7 @@ export default async function ChurnPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800/50">
-                  {highRiskCustomers.map((row: any) => (
+                  {highRiskCustomers.map((row: ChurnScore) => (
                     <tr key={row.customerId} className="hover:bg-zinc-800/30 transition-colors">
                       <td className="px-4 py-3 font-medium text-zinc-300 sticky left-0 bg-zinc-900 border-r border-zinc-800 z-10">{row.customerId}</td>
                       <td className="px-4 py-3">

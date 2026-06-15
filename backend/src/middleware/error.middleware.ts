@@ -9,10 +9,10 @@ export const errorMiddleware = (
 ) => {
   console.error('[Error]:', err);
 
-  if (err instanceof ZodError) {
+  if (err.name === 'ZodError') {
     return res.status(400).json({
       error: 'Validation Error',
-      details: err.errors
+      details: (err as any).errors
     });
   }
 

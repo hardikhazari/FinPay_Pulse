@@ -4,7 +4,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Card } from "@/components/ui/card";
 
 interface ForecastChartProps {
-  data: any[];
+  data: { month: string; predictedRevenue: number | string; modelUsed: string; computedAt: string }[];
 }
 
 export function ForecastChart({ data }: ForecastChartProps) {

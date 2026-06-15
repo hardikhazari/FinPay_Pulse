@@ -2,19 +2,20 @@ import { fetchApi } from "@/lib/api";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { RfmChart } from "./RfmChart";
+import { RfmScore } from "@/types/api";
 
 export default async function SegmentsPage() {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
 
-  let rfmData = [];
+  let rfmData: RfmScore[] = [];
   let errorMsg = null;
 
   try {
     const res = await fetchApi('/api/rfm?limit=1000');
     rfmData = res.data;
-  } catch (err: any) {
-    errorMsg = err.message || "Failed to load RFM data.";
+  } catch (err: unknown) {
+    errorMsg = (err as Error).message || "Failed to load RFM data.";
   }
 
   return (
@@ -46,7 +47,7 @@ export default async function SegmentsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/50">
-                {rfmData.map((row: any) => (
+                {rfmData.map((row: RfmScore) => (
                   <tr key={row.customerId} className="hover:bg-zinc-800/30 transition-colors">
                     <td className="px-4 py-3 font-medium text-zinc-300 sticky left-0 bg-zinc-900 border-r border-zinc-800 z-10">{row.customerId}</td>
                     <td className="px-4 py-3">

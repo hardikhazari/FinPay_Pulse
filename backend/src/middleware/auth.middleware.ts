@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { ClerkExpressRequireAuth, RequireAuthProp, StrictAuthProp } from '@clerk/clerk-sdk-node';
 import { prisma } from '../lib/prisma';
 
@@ -13,7 +13,7 @@ declare global {
  * Middleware to require valid Clerk authentication.
  * If successful, req.auth is populated.
  */
-export const requireAuth = ClerkExpressRequireAuth();
+export const requireAuth = ClerkExpressRequireAuth() as unknown as RequestHandler;
 
 /**
  * Middleware to attach the user's role from the database to the request.

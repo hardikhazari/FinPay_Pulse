@@ -2,19 +2,20 @@ import { fetchApi } from "@/lib/api";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ForecastChart } from "./ForecastChart";
+import { Forecast } from "@/types/api";
 
 export default async function ForecastPage() {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
 
-  let forecastData = [];
+  let forecastData: Forecast[] = [];
   let errorMsg = null;
 
   try {
     const res = await fetchApi('/api/forecast?limit=24'); // Get up to 24 months
     forecastData = res.data;
-  } catch (err: any) {
-    errorMsg = err.message || "Failed to load Forecast data.";
+  } catch (err: unknown) {
+    errorMsg = (err as Error).message || "Failed to load Forecast data.";
   }
 
   return (
@@ -43,7 +44,7 @@ export default async function ForecastPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/50">
-                {forecastData.map((row: any) => (
+                {forecastData.map((row: Forecast) => (
                   <tr key={row.month} className="hover:bg-zinc-800/30 transition-colors">
                     <td className="px-4 py-3 font-medium text-zinc-300 sticky left-0 bg-zinc-900 border-r border-zinc-800 z-10">
                       {row.month}

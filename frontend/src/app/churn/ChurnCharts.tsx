@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { Card } from "@/components/ui/card";
 
 interface ChurnChartsProps {
-  data: any[];
+  data: { name: string; value: number; fill: string }[];
   total: number;
 }
 

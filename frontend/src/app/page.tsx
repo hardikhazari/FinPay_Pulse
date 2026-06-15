@@ -1,5 +1,6 @@
 import { fetchApi } from "@/lib/api";
 import { MetricCard } from "@/components/MetricCard";
+import { ChurnScore, Forecast } from "@/types/api";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -7,7 +8,9 @@ export default async function DashboardPage() {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
 
-  let rfmData, churnData, forecastData;
+  let rfmData: { total: number } | undefined;
+  let churnData: ChurnScore[] | undefined;
+  let forecastData: Forecast[] | undefined;
   let errorMsg = null;
 
   try {
@@ -21,13 +24,13 @@ export default async function DashboardPage() {
     rfmData = rfmRes.meta;
     churnData = churnRes.data;
     forecastData = forecastRes.data;
-  } catch (err: any) {
-    errorMsg = err.message || "Failed to load dashboard data. Ensure the Express backend is running.";
+  } catch (err: unknown) {
+    errorMsg = (err as Error).message || "Failed to load dashboard data. Ensure the Express backend is running.";
   }
 
   // Calculate high level metrics
   const totalCustomers = rfmData?.total || 0;
-  const highRiskCustomers = churnData?.filter((c: any) => c.riskTier === 'High').length || 0;
+  const highRiskCustomers = churnData?.filter((c: ChurnScore) => c.riskTier === 'High').length || 0;
   const highRiskPercent = totalCustomers > 0 ? ((highRiskCustomers / totalCustomers) * 100).toFixed(1) : "0.0";
   
   const currentMonthForecast = forecastData?.[0]?.predictedRevenue || 0;

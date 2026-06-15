@@ -23,7 +23,7 @@ import { prisma } from './lib/prisma';
 // Health Check
 app.get('/health', async (req: Request, res: Response) => {
   try {
-    await prisma.$queryRaw\`SELECT 1\`;
+    await prisma.$queryRaw`SELECT 1`;
     res.json({ status: "ok", db: "connected" });
   } catch (err) {
     res.status(500).json({ status: "error", db: "disconnected", details: String(err) });

@@ -2,25 +2,33 @@ import { fetchApi } from "@/lib/api";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { CohortHeatmap } from "./CohortHeatmap";
+import { CohortMatrixRow } from "@/types/api";
+
+interface CohortRawRow {
+  cohortMonth: string;
+  activeMonth: string;
+  total: number;
+  retained: number;
+}
 
 export default async function CohortsPage() {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
 
-  let cohortData = [];
+  let cohortData: CohortRawRow[] = [];
   let errorMsg = null;
 
   try {
     const res = await fetchApi('/api/cohort?limit=10000');
     cohortData = res.data;
-  } catch (err: any) {
-    errorMsg = err.message || "Failed to load Cohort data.";
+  } catch (err: unknown) {
+    errorMsg = (err as Error).message || "Failed to load Cohort data.";
   }
 
   // Pre-process aggregated data into a matrix
   const matrix: Record<string, Record<string, { total: number, retained: number }>> = {};
   
-  cohortData.forEach((row: any) => {
+  cohortData.forEach((row) => {
     if (!matrix[row.cohortMonth]) {
       matrix[row.cohortMonth] = {};
     }
@@ -28,11 +36,11 @@ export default async function CohortsPage() {
   });
 
   // Calculate percentages
-  const heatmapData: any[] = [];
+  const heatmapData: CohortMatrixRow[] = [];
   const allActiveMonths = new Set<string>();
 
   Object.keys(matrix).sort().forEach(cohortMonth => {
-    const rowObj: any = { cohortMonth };
+    const rowObj: CohortMatrixRow = { cohortMonth };
     
     // Sort active months to find Month 0, 1, 2... relative to cohort
     const sortedActive = Object.keys(matrix[cohortMonth]).sort();

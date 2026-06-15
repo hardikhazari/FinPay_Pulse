@@ -1,9 +1,10 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { CohortMatrixRow } from "@/types/api";
 
 interface CohortHeatmapProps {
-  data: any[];
+  data: CohortMatrixRow[];
   columns: string[];
 }
 
@@ -45,7 +46,7 @@ export function CohortHeatmap({ data, columns }: CohortHeatmapProps) {
                   {row.cohortMonth}
                 </td>
                 {columns.map(col => {
-                  const val = row[col];
+                  const val = row[col] as number | undefined;
                   return (
                     <td 
                       key={col} 

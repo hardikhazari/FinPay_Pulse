@@ -6,16 +6,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@clerk/nextjs";
 
-type UploadResult = {
-  inserted: number;
-  skipped: number;
-  errors: Array<{ row: number; reason: string }>;
-};
+import { UploadResponse } from "@/types/api";
 
 export function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [result, setResult] = useState<UploadResult | null>(null);
+  const [result, setResult] = useState<UploadResponse | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const { getToken } = useAuth();
 
@@ -54,13 +50,14 @@ export function UploadForm() {
       }
 
       setResult({
+        message: data.message || "Successfully processed file",
         inserted: data.inserted,
         skipped: data.skipped,
         errors: data.errors,
       });
       setFile(null); // Clear on success
-    } catch (err: any) {
-      setServerError(err.message);
+    } catch (err: unknown) {
+      setServerError((err as Error).message);
     } finally {
       setIsUploading(false);
     }

@@ -49,8 +49,8 @@ export function ForecastChart({ data }: ForecastChartProps) {
               contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '6px' }}
               itemStyle={{ color: '#10b981', fontSize: '14px', fontWeight: '500' }}
               labelStyle={{ color: '#a1a1aa', fontSize: '12px', marginBottom: '4px' }}
-              formatter={(value: number) => [
-                new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value),
+              formatter={(value: number | string | Array<number | string> | undefined) => [
+                new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value || 0)),
                 'Projected Revenue'
               ]}
             />

@@ -5,7 +5,7 @@ import { prisma } from '../lib/prisma';
 // Extend Express Request to include Clerk auth
 declare global {
   namespace Express {
-    interface Request extends StrictAuthProp {}
+    interface Request extends StrictAuthProp { }
   }
 }
 
@@ -33,7 +33,7 @@ export const attachRole = async (req: Request, res: Response, next: NextFunction
     });
 
     (req as any).userRole = user.role;
-    
+
     next();
   } catch (error) {
     next(error);

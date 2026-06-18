@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
-import fs from 'fs';
 import csvParser from 'csv-parser';
 import { z } from 'zod';
+import { Readable } from 'stream';
 
 const transactionSchema = z.object({
   transaction_id: z.string().min(1),
@@ -35,12 +35,12 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
     }
 
     let insertedCount = 0;
-    const errors: any[] = [];
+    const errors: { row: number; reason: string }[] = [];
     let rowCount = 0;
-    let currentBatch: any[] = [];
+    let currentBatch: z.infer<typeof transactionSchema>[] = [];
 
     // Helper to process a batch of 500
-    const processBatch = async (batch: any[]) => {
+    const processBatch = async (batch: z.infer<typeof transactionSchema>[]) => {
       if (batch.length === 0) return;
       
       const uniqueCustomers = Array.from(new Set(batch.map(r => r.customer_id)));
@@ -69,7 +69,8 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
       insertedCount += batch.length;
     };
 
-    const stream = fs.createReadStream(req.file.path).pipe(csvParser());
+    // Create a readable stream from the in-memory buffer (no disk I/O)
+    const stream = Readable.from(req.file.buffer).pipe(csvParser());
 
     for await (const row of stream) {
       rowCount++;
@@ -81,9 +82,10 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
           await processBatch(currentBatch);
           currentBatch = [];
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Collect Zod error but KEEP processing the rest of the file
-        const issues = err.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ');
+        const zodErr = err as z.ZodError;
+        const issues = zodErr.errors?.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ') || String(err);
         errors.push({ row: rowCount, reason: issues });
       }
     }
@@ -93,9 +95,6 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
       await processBatch(currentBatch);
     }
 
-    // Cleanup temp file
-    fs.unlinkSync(req.file.path);
-
     res.status(200).json({
       message: 'Upload complete',
       inserted: insertedCount,
@@ -103,9 +102,6 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
       errors: errors.slice(0, 50) // Cap to avoid huge response payloads
     });
   } catch (error) {
-    if (req.file && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
-    }
     next(error);
   }
 };

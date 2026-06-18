@@ -26,22 +26,13 @@ export const attachRole = async (req: Request, res: Response, next: NextFunction
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { clerkId }
+    const user = await prisma.user.upsert({
+      where: { clerkId },
+      update: {},
+      create: { clerkId, role: 'viewer' }
     });
 
-    if (!user) {
-      // Auto-create viewer if first time log in, or handle accordingly
-      const newUser = await prisma.user.create({
-        data: {
-          clerkId,
-          role: 'viewer'
-        }
-      });
-      (req as any).userRole = newUser.role;
-    } else {
-      (req as any).userRole = user.role;
-    }
+    (req as any).userRole = user.role;
     
     next();
   } catch (error) {

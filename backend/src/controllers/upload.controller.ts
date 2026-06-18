@@ -46,14 +46,11 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
       const uniqueCustomers = Array.from(new Set(batch.map(r => r.customer_id)));
       
       await prisma.$transaction(async (tx) => {
-        // Upsert Customers first
-        for (const cid of uniqueCustomers) {
-          await tx.customer.upsert({
-            where: { id: cid },
-            update: {},
-            create: { id: cid }
-          });
-        }
+        // Bulk insert Customers
+        await tx.customer.createMany({
+          data: uniqueCustomers.map(cid => ({ id: cid })),
+          skipDuplicates: true
+        });
 
         // Bulk insert transactions
         await tx.transaction.createMany({

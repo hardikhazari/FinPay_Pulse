@@ -36,7 +36,8 @@ export function ChurnCharts({ data, total }: ChurnChartsProps) {
             <Tooltip 
               contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '6px' }}
               itemStyle={{ color: '#e4e4e7', fontSize: '12px' }}
-              formatter={(value: number | string | Array<number | string> | undefined) => [Number(value || 0).toLocaleString(), 'Users']}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              formatter={(value: any) => [Number(value || 0).toLocaleString(), 'Users']}
             />
             <Legend 
               verticalAlign="bottom" 

@@ -50,7 +50,7 @@ export default async function ForecastPage() {
                       {row.month}
                     </td>
                     <td className="px-4 py-3 text-right tabular-nums text-emerald-400 font-medium">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row.predictedRevenue)}
+                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(row.predictedRevenue))}
                     </td>
                   </tr>
                 ))}

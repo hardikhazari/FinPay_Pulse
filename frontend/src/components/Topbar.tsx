@@ -16,6 +16,7 @@ export function Topbar() {
     <header className="h-14 border-b border-zinc-800 bg-zinc-950 flex items-center justify-between px-4 sticky top-0 z-50">
       <div className="flex items-center md:hidden">
         <Sheet>
+          {/* @ts-expect-error asChild exists on Radix Primitive Trigger but lacks type here */}
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
               <Menu className="h-5 w-5" />

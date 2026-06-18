@@ -3,8 +3,10 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card } from "@/components/ui/card";
 
+import { RfmScore } from "@/types/api";
+
 interface RfmChartProps {
-  data: { name: string; value: number; fill: string }[];
+  data: RfmScore[];
 }
 
 export function RfmChart({ data }: RfmChartProps) {

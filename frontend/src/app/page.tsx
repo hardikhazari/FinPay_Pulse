@@ -34,7 +34,7 @@ export default async function DashboardPage() {
   const highRiskPercent = totalCustomers > 0 ? ((highRiskCustomers / totalCustomers) * 100).toFixed(1) : "0.0";
   
   const currentMonthForecast = forecastData?.[0]?.predictedRevenue || 0;
-  const formattedRevenue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(currentMonthForecast);
+  const formattedRevenue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(currentMonthForecast));
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">

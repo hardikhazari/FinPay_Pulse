@@ -56,7 +56,7 @@ export default async function ForecastPage() {
                 ))}
                 {forecastData.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="px-4 py-8 text-center text-zinc-500 text-sm">
+                    <td colSpan={2} className="px-4 py-8 text-center text-zinc-500 text-sm">
                       No forecast data available. Run the ML scoring pipeline first.
                     </td>
                   </tr>

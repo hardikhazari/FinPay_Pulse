@@ -2,22 +2,30 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { ClerkExpressRequireAuth, RequireAuthProp, StrictAuthProp } from '@clerk/clerk-sdk-node';
 import { prisma } from '../lib/prisma';
 
-// Extend Express Request to include Clerk auth
+// Clerk adds an `auth` object to every request after verification.
+// We extend the Express Request type globally so TypeScript knows about it.
 declare global {
   namespace Express {
-    interface Request extends StrictAuthProp { }
+    interface Request extends StrictAuthProp {}
   }
 }
 
 /**
- * Middleware to require valid Clerk authentication.
- * If successful, req.auth is populated.
+ * Step 1 — Verify the JWT.
+ *
+ * Clerk's built-in middleware checks the Authorization header for a valid
+ * Bearer token. If the token is missing or expired, it short-circuits
+ * the request with a 401 before our code even runs.
  */
 export const requireAuth = ClerkExpressRequireAuth() as unknown as RequestHandler;
 
 /**
- * Middleware to attach the user's role from the database to the request.
- * Requires requireAuth to run first.
+ * Step 2 — Sync the Clerk user to our own database and attach their role.
+ *
+ * On first login the user won't exist in MySQL yet, so we upsert.
+ * The very first user to ever hit the app is auto-promoted to admin
+ * so there's always someone who can upload data and manage the system.
+ * After that, new users default to 'viewer'.
  */
 export const attachRole = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,12 +34,20 @@ export const attachRole = async (req: Request, res: Response, next: NextFunction
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
+    // Allow explicit admin assignment via env var, or fall back to
+    // "first user gets admin" logic for fresh deployments.
+    const adminClerkId = process.env.ADMIN_CLERK_ID;
+    const isAdmin = adminClerkId
+      ? clerkId === adminClerkId
+      : (await prisma.user.count()) === 0;
+
     const user = await prisma.user.upsert({
       where: { clerkId },
       update: {},
-      create: { clerkId, role: 'viewer' }
+      create: { clerkId, role: isAdmin ? 'admin' : 'viewer' },
     });
 
+    // Stash the role on the request so downstream middleware can read it.
     (req as any).userRole = user.role;
 
     next();
@@ -41,7 +57,10 @@ export const attachRole = async (req: Request, res: Response, next: NextFunction
 };
 
 /**
- * Middleware to restrict access to admin users only.
+ * Step 3 (optional) — Gate a route to admins only.
+ *
+ * Attach this after `attachRole` on any route that should be
+ * restricted to admin users (e.g. the CSV upload endpoint).
  */
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   const role = (req as any).userRole;

@@ -6,6 +6,8 @@ from sqlalchemy.dialects.mysql import insert
 def get_engine():
     # Read DATABASE_URL from environment or fallback to a local MySQL instance
     db_url = os.environ.get("DATABASE_URL", "mysql+pymysql://root:@localhost:3306/finpay_pulse")
+    if db_url.startswith("mysql://"):
+        db_url = db_url.replace("mysql://", "mysql+pymysql://", 1)
     return create_engine(db_url)
 
 def mysql_upsert(table, conn, keys, data_iter):

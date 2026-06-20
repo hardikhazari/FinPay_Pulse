@@ -38,7 +38,7 @@ export const getChurnScores = async (req: Request, res: Response, next: NextFunc
     });
     
     const distribution = { Low: 0, Medium: 0, High: 0 };
-    grouped.forEach(g => {
+    grouped.forEach((g: any) => {
       if (g.riskTier === 'Low') distribution.Low = g._count.customerId;
       if (g.riskTier === 'Medium') distribution.Medium = g._count.customerId;
       if (g.riskTier === 'High') distribution.High = g._count.customerId;

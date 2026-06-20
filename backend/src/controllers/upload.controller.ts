@@ -56,7 +56,7 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
 
       const uniqueCustomers = Array.from(new Set(batch.map(r => r.customer_id)));
 
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: any) => {
         await tx.customer.createMany({
           data: uniqueCustomers.map(cid => ({ id: cid })),
           skipDuplicates: true,
@@ -93,9 +93,13 @@ export const uploadTransactions = async (req: Request, res: Response, next: Next
         }
       } catch (err: unknown) {
         // Don't bail on one bad row — log it and keep going
-        const zodErr = err as z.ZodError;
-        const issues = zodErr.errors?.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ') || String(err);
-        errors.push({ row: rowCount, reason: issues });
+        if (err instanceof z.ZodError) {
+          const zodErr = err as any;
+          const issues = zodErr.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ');
+          errors.push({ row: rowCount, reason: issues });
+        } else {
+          errors.push({ row: rowCount, reason: String(err) });
+        }
       }
     }
 

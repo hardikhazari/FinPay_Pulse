@@ -30,13 +30,13 @@ export const getCohorts = async (req: Request, res: Response, next: NextFunction
 
     // Determine cohortSize (total) from month 0 retention
     const totals: Record<string, number> = {};
-    grouped.forEach(g => {
+    grouped.forEach((g: any) => {
       if (g.cohortMonth === g.activeMonth) {
         totals[g.cohortMonth] = g._count.customerId;
       }
     });
 
-    const data = grouped.map(g => ({
+    const data = grouped.map((g: any) => ({
       cohortMonth: g.cohortMonth,
       activeMonth: g.activeMonth,
       retained: g._count.customerId,

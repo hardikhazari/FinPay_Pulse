@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Users, UserMinus, LineChart, PieChart, Upload } from 'lucide-react';
+import { LayoutDashboard, Users, UserMinus, LineChart, PieChart, Upload, Database } from 'lucide-react';
 
 /* ── Navigation config ─────────────────────────────────────────────── */
 
 export const routes = [
   { name: 'Overview',     path: '/dashboard', icon: LayoutDashboard },
+  { name: 'SQL Insights', path: '/sql',       icon: Database },
   { name: 'RFM Segments', path: '/segments',  icon: PieChart },
   { name: 'Cohorts',      path: '/cohorts',   icon: Users },
   { name: 'Churn Risk',   path: '/churn',     icon: UserMinus },

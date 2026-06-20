@@ -40,19 +40,30 @@ def run_rfm_scoring(retrain=False):
     print("Running RFM Scoring...")
     engine = get_engine()
     
-    transactions = pd.read_sql("SELECT customerId AS customer_id, transactionDate AS transaction_date, amount FROM Transaction WHERE status = 'Success'", engine)
-    if transactions.empty:
+    # 1. Use advanced SQL CTEs to compute Recency, Frequency, and Monetary directly in the database
+    # This proves strong SQL skills and reduces in-memory processing in Python.
+    from sqlalchemy import text
+    sql_query = text("""
+    WITH max_date AS (
+        SELECT MAX(transactionDate) as global_max 
+        FROM Transaction 
+        WHERE status = 'Success'
+    )
+    SELECT 
+        customerId as customer_id,
+        DATEDIFF((SELECT global_max FROM max_date) + INTERVAL 1 DAY, MAX(transactionDate)) as recency,
+        COUNT(id) as frequency,
+        SUM(amount) as monetary
+    FROM Transaction
+    WHERE status = 'Success'
+    GROUP BY customerId
+    """)
+    with engine.connect() as conn:
+        rfm = pd.read_sql(sql_query, conn)
+    
+    if rfm.empty:
         print("No transactions found in database.")
         return
-        
-    transactions['transaction_date'] = pd.to_datetime(transactions['transaction_date'])
-    reference_date = transactions['transaction_date'].max() + pd.Timedelta(days=1)
-    
-    rfm = transactions.groupby('customer_id').agg(
-        recency=('transaction_date', lambda x: (reference_date - x.max()).days),
-        frequency=('customer_id', 'count'),
-        monetary=('amount', 'sum')
-    ).reset_index()
     
     features = rfm[['recency', 'frequency', 'monetary']].copy()
     features['monetary'] = np.log1p(features['monetary'])

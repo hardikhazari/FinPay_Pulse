@@ -10,6 +10,7 @@ import churnRoutes    from './routes/churn.routes';
 import forecastRoutes from './routes/forecast.routes';
 import cohortRoutes   from './routes/cohort.routes';
 import uploadRoutes   from './routes/upload.routes';
+import sqlRoutes      from './routes/sql.routes';
 
 const app: Express = express();
 const port = process.env.PORT || 3001;
@@ -38,6 +39,7 @@ app.use('/api/churn',    churnRoutes);
 app.use('/api/forecast', forecastRoutes);
 app.use('/api/cohort',   cohortRoutes);
 app.use('/api/upload',   uploadRoutes);
+app.use('/api/sql',      sqlRoutes);
 
 // Anything that throws or calls next(err) ends up here
 app.use(errorMiddleware);

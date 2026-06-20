@@ -21,37 +21,38 @@ def run_cohort_scoring():
     print("Running Cohort Scoring...")
     engine = get_engine()
 
-    # Pull successful transactions — we only care about customer id and date
-    query = (
-        "SELECT customerId AS customer_id, "
-        "       transactionDate AS transaction_date "
-        "FROM Transaction "
-        "WHERE status = 'Success'"
+    # Use pure SQL with CTEs to calculate cohorts and active months.
+    # This highlights advanced SQL skills by moving the logic from Pandas into the database.
+    query = text("""
+    WITH user_cohorts AS (
+        SELECT 
+            customerId as customer_id,
+            DATE_FORMAT(MIN(transactionDate), '%%Y-%%m') as cohort_month
+        FROM Transaction
+        WHERE status = 'Success'
+        GROUP BY customerId
+    ),
+    active_months AS (
+        SELECT DISTINCT
+            customerId as customer_id,
+            DATE_FORMAT(transactionDate, '%%Y-%%m') as activity_month
+        FROM Transaction
+        WHERE status = 'Success'
     )
-    transactions = pd.read_sql(query, engine)
+    SELECT 
+        a.customer_id,
+        c.cohort_month,
+        a.activity_month,
+        1 as retained
+    FROM active_months a
+    JOIN user_cohorts c ON a.customer_id = c.customer_id
+    """)
+    with engine.connect() as conn:
+        active_months = pd.read_sql(query, conn)
 
-    if transactions.empty:
+    if active_months.empty:
         print("No transactions found in database.")
         return
-
-    transactions['transaction_date'] = pd.to_datetime(transactions['transaction_date'])
-    transactions['activity_month'] = transactions['transaction_date'].dt.strftime('%Y-%m')
-
-    # Each customer's first ever transaction month is their "cohort"
-    cohorts = (
-        transactions
-        .groupby('customer_id')['activity_month']
-        .min()
-        .reset_index()
-        .rename(columns={'activity_month': 'cohort_month'})
-    )
-
-    # Merge cohort month back onto every transaction row
-    df = pd.merge(transactions, cohorts, on='customer_id')
-
-    # Deduplicate: one row per (customer, cohort, active month)
-    active_months = df[['customer_id', 'cohort_month', 'activity_month']].drop_duplicates()
-    active_months['retained'] = True
 
     # Build the output dataframe that matches the Prisma Cohort schema
     output_df = pd.DataFrame({

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Define the root of the sql scripts directory relative to this controller
-const SQL_DIR = path.join(__dirname, '../../../sql');
+const SQL_DIR = path.join(__dirname, '../../sql');
 
 /**
  * GET /api/sql/scripts

@@ -1,3 +1,11 @@
+"""
+FinPay Pulse - Churn Prediction Model
+
+This module trains and executes a Logistic Regression classifier to predict
+the probability of a customer churning within the next 30 days. It uses class-weight
+balancing to handle natural churn skew and categorizes users into Risk Tiers.
+"""
+
 import pandas as pd
 import numpy as np
 import datetime

@@ -1,3 +1,11 @@
+"""
+FinPay Pulse - RFM Segmentation Model
+
+This module performs K-Means clustering to segment customers based on their
+Recency, Frequency, and Monetary (RFM) transaction metrics. It writes the resulting
+segment labels and scores back to the database for downstream analytics.
+"""
+
 import pandas as pd
 import numpy as np
 import datetime

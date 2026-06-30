@@ -131,13 +131,16 @@ FinPay_Pulse/
 │
 ├── ml/                       # Python ML scoring pipeline
 │   ├── run_scoring.py                # Orchestrator script
-│   ├── rfm_segmentation.py          # K-Means clustering
-│   ├── churn_model.py                # Logistic Regression
-│   ├── clv_forecast.py               # Customer lifetime value
-│   ├── revenue_forecast.py           # Holt-Winters forecasting
-│   ├── cohort_scoring.py             # Cohort retention matrix
-│   ├── db_utils.py                   # SQLAlchemy DB helpers
-│   └── models/                       # Serialised model files (.joblib)
+│   ├── core/                         # Infrastructure & Utils
+│   │   └── db_utils.py               # SQLAlchemy DB helpers
+│   ├── pipelines/                    # ML Job Scripts
+│   │   ├── rfm_segmentation.py       # K-Means clustering
+│   │   ├── churn_model.py            # Logistic Regression
+│   │   ├── clv_forecast.py           # Customer lifetime value
+│   │   ├── revenue_forecast.py       # Holt-Winters forecasting
+│   │   ├── cohort_scoring.py         # Cohort retention matrix
+│   │   ├── transaction_failure_model.py
+│   │   └── models/                   # Serialised model files (.joblib)
 │
 ├── sql/                      # Standalone SQL analysis queries
 ├── data/                     # Sample CSV datasets
@@ -234,7 +237,7 @@ Run the full pipeline with:
 ```bash
 cd ml
 python run_scoring.py --retrain
-python cohort_scoring.py
+python pipelines/cohort_scoring.py
 ```
 
 | Model               | Algorithm                     | Input                       | Output Table |
@@ -281,7 +284,7 @@ Make sure to set all [environment variables](#environment-variables) in the Rail
 
 ## Author
 
-**Hardik Hazari**
+**Hardik Hazari & Nandini Gupta**
 
 ---
 

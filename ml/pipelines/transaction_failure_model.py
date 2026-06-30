@@ -1,3 +1,11 @@
+"""
+FinPay Pulse - Transaction Failure Prediction (Experimental)
+
+This module contains a prototype classifier designed to predict the likelihood
+of a transaction failing based on temporal and categorical features. 
+Note: Currently disabled in the main production orchestrator.
+"""
+
 import pandas as pd
 import numpy as np
 import datetime

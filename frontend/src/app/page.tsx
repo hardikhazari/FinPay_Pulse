@@ -145,9 +145,6 @@ export default async function LandingPage() {
             backed by a <strong className="text-zinc-200">MySQL</strong> database — all deployed
             on <strong className="text-zinc-200">Railway</strong> for production-grade reliability.
           </p>
-          <p className="text-zinc-500 text-sm mt-6">
-            Designed and developed by Hardik Hazari.
-          </p>
         </div>
       </section>
 

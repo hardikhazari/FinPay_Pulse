@@ -1,6 +1,7 @@
 import { fetchApi } from "@/lib/api";
 import { MetricCard } from "@/components/MetricCard";
 import { ChurnScore, Forecast } from "@/types/api";
+import { ForecastChart } from "@/app/(dashboard)/forecast/ForecastChart";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -66,9 +67,8 @@ export default async function DashboardPage() {
             />
           </div>
 
-          <div className="h-96 w-full border border-zinc-800 bg-zinc-900/50 rounded-lg flex items-center justify-center flex-col text-zinc-500">
-            <p className="text-sm font-medium">Dashboard visual overview</p>
-            <p className="text-xs">Navigate to specific tabs for deep-dives.</p>
+          <div className="mt-8">
+            <ForecastChart data={forecastData || []} />
           </div>
         </>
       )}

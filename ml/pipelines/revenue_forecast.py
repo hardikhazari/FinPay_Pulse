@@ -1,3 +1,11 @@
+"""
+FinPay Pulse - Revenue Forecasting Model
+
+This module uses Holt-Winters Exponential Smoothing (with additive seasonality)
+to predict aggregate monthly revenue for the upcoming 6 months. It isolates underlying
+trends from seasonal transaction spikes.
+"""
+
 import pandas as pd
 import numpy as np
 import datetime

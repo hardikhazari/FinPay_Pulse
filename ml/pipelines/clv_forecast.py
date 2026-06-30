@@ -1,3 +1,11 @@
+"""
+FinPay Pulse - Customer Lifetime Value (CLV) Estimator
+
+This module calculates a heuristic-based 12-month Customer Lifetime Value projection.
+It computes the annualized spend rate per user by normalizing total historical
+revenue against their active lifespan.
+"""
+
 import pandas as pd
 import numpy as np
 import datetime

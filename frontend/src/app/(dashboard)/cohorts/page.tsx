@@ -45,8 +45,13 @@ export default async function CohortsPage() {
     // Sort active months to find Month 0, 1, 2... relative to cohort
     const sortedActive = Object.keys(matrix[cohortMonth]).sort();
     
-    sortedActive.forEach((activeMonth, idx) => {
-      const monthLabel = `M${idx}`;
+    sortedActive.forEach((activeMonth) => {
+      const [cohortY, cohortM] = cohortMonth.split('-').map(Number);
+      const [activeY, activeM] = activeMonth.split('-').map(Number);
+      
+      const monthDiff = (activeY - cohortY) * 12 + (activeM - cohortM);
+      const monthLabel = `M${monthDiff}`;
+      
       allActiveMonths.add(monthLabel);
       
       const stats = matrix[cohortMonth][activeMonth];

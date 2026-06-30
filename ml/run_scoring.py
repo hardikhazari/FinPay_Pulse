@@ -5,11 +5,11 @@ import argparse
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from rfm_segmentation import run_rfm_scoring
-from churn_model import run_churn_scoring
-from clv_forecast import run_clv_forecast
-from revenue_forecast import run_revenue_forecast
-from transaction_failure_model import run_failure_model
+from pipelines.rfm_segmentation import run_rfm_scoring
+from pipelines.churn_model import run_churn_scoring
+from pipelines.clv_forecast import run_clv_forecast
+from pipelines.revenue_forecast import run_revenue_forecast
+from pipelines.transaction_failure_model import run_failure_model
 import warnings
 warnings.filterwarnings('ignore')
 

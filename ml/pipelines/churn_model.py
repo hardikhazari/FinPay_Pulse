@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from db_utils import write_to_db, get_engine
+from core.db_utils import write_to_db, get_engine
 import warnings
 warnings.filterwarnings('ignore')
 

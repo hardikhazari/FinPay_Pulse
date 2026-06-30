@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import datetime
-from db_utils import write_to_db, get_engine
+from core.db_utils import write_to_db, get_engine
 import warnings
 warnings.filterwarnings('ignore')
 

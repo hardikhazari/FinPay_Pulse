@@ -5,7 +5,7 @@ import argparse
 import joblib
 import os
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
-from db_utils import write_to_db, get_engine
+from core.db_utils import write_to_db, get_engine
 import warnings
 warnings.filterwarnings('ignore')
 

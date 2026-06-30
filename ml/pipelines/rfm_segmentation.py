@@ -6,7 +6,7 @@ import joblib
 import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
-from db_utils import write_to_db, get_engine
+from core.db_utils import write_to_db, get_engine
 import warnings
 warnings.filterwarnings('ignore')
 

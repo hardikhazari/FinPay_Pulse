@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from db_utils import get_engine
+from core.db_utils import get_engine
 import warnings
 warnings.filterwarnings('ignore')
 

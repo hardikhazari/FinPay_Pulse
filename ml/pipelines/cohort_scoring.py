@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from sqlalchemy import text
-from db_utils import get_engine
+from core.db_utils import get_engine
 
 
 def run_cohort_scoring():

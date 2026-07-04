@@ -8,6 +8,7 @@ A full-stack analytics platform that transforms raw transaction data into action
 
 ## Table of Contents
 
+- [Screenshots](#screenshots)
 - [Architecture Overview](#architecture-overview)
 - [Tech Stack](#tech-stack)
 - [Features](#features)
@@ -18,6 +19,28 @@ A full-stack analytics platform that transforms raw transaction data into action
 - [ML Pipeline](#ml-pipeline)
 - [API Reference](#api-reference)
 - [Deployment](#deployment)
+
+---
+
+## Screenshots
+
+<div align="center">
+  <img src="Photos/1.png" width="800" alt="Dashboard Overview"/>
+  <br/>
+  <img src="Photos/2.png" width="800" alt="Segmentation"/>
+  <br/>
+  <img src="Photos/2a.png" width="800" alt="Segmentation 2"/>
+  <br/>
+  <img src="Photos/3.png" width="800" alt="Churn Analysis"/>
+  <br/>
+  <img src="Photos/4.png" width="800" alt="Forecast"/>
+  <br/>
+  <img src="Photos/5.png" width="800" alt="Cohorts"/>
+  <br/>
+  <img src="Photos/6.png" width="800" alt="SQL Insights"/>
+  <br/>
+  <img src="Photos/7.png" width="800" alt="Data Upload"/>
+</div>
 
 ---
 
